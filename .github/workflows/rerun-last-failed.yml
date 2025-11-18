@@ -22,7 +22,11 @@ jobs:
         id: last_failed  
         run: |  
           npx tdpw last-failed --token="${{ secrets.TESTDINO_TOKEN }}" > last_failed.txt  
-          echo "args=$(cat last_failed.txt)" >> $GITHUB_OUTPUT
+          if [ -s last_failed.txt ]; then
+              echo "args=$(cat last_failed.txt)" >> $GITHUB_OUTPUT
+          else
+              echo "args=" >> $GITHUB_OUTPUT
+          fi
  
       - name: Run only failed tests  
         run: npx playwright test ${{ steps.last_failed.outputs.args }}
