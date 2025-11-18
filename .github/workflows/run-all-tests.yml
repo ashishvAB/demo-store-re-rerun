@@ -40,3 +40,10 @@ jobs:
       - name: Cache test metadata (always)  
         if: always()  
         run: npx tdpw cache --token="${{ secrets.TESTDINO_TOKEN }}"
+     
+      - name: Send TestDino report
+        if: always()
+        # env:
+        #   NODE_ENV: staging
+        run: |
+         npx --yes tdpw ./playwright-report --token="${{ secrets.TESTDINO_TOKEN }}" --upload-html --verbose
