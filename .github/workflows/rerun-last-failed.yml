@@ -1,0 +1,32 @@
+name: failed-only-reruns  
+on:  
+  workflow_dispatch:
+ 
+jobs:  
+  rerun:  
+    runs-on: ubuntu-latest  
+    env:  
+      TESTDINO_TOKEN: ${{ secrets.TESTDINO_TOKEN }}  
+    steps:  
+      - uses: actions/checkout@v4  
+
+      - uses: actions/setup-node@v4  
+        with: { node-version: '22.x' }
+ 
+      - name: Install deps  
+        run: |  
+          npm ci  
+          npx playwright install --with-deps
+ 
+      - name: Get last failed tests with tdpw  
+        id: last_failed  
+        run: |  
+          npx tdpw last-failed --token="${{ secrets.TESTDINO_TOKEN }}" > last_failed.txt  
+          echo "args=$(cat last_failed.txt)" >> $GITHUB_OUTPUT
+ 
+      - name: Run only failed tests  
+        run: npx playwright test ${{ steps.last_failed.outputs.args }}
+ 
+      - name: Cache rerun metadata (always)  
+        if: always()  
+        run: npx tdpw cache --token="${{ secrets.TESTDINO_TOKEN }}"
