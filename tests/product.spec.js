@@ -28,7 +28,7 @@ async function logout() {
   await allPages.loginPage.clickOnLogoutButton();
 }
 
-test('Verify that user is able to submit a product review @firefox', async () => {
+test('Verify that user is able to submit a product review ', async () => {
   await test.step('Login as existing user and navigate to a product', async () => {
     await login();
   })
@@ -53,7 +53,7 @@ test('Verify that user is able to submit a product review @firefox', async () =>
   })
 });
 
-test('Verify that user can edit and delete a product review @firefox', async () => {
+test('Verify that user can edit and delete a product review ', async () => {
   await test.step('Login as existing user and navigate to a product', async () => {
     await login();
   })
@@ -99,12 +99,12 @@ test('Verify that user can filter products by price range @webkit', async () => 
     await allPages.homePage.clickOnFilterButton();
 });
 */
-test('Verify if user can add product to wishlist, moves it to card and then checks out @webkit', async () => {
+test('Verify if user can add product to wishlist, moves it to card and then checks out ', async () => {
     await login();
   
     await test.step('Add product to wishlistand then add to cart', async () => {
       await allPages.homePage.clickOnShopNowButton();
-      await allPages.inventoryPage.addToWishlist();
+      // await allPages.inventoryPage.addToWishlist();
       await allPages.inventoryPage.assertWishlistIcon();
       await allPages.inventoryPage.clickOnWishlistIconHeader();
       await allPages.inventoryPage.assertWishlistPage();

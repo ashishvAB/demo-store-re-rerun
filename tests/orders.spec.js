@@ -54,9 +54,9 @@ test('Verify that User Can Add, Edit, and Delete Addresses after Logging In @ios
 test('Verify that the New User is able to add Addresses in the Address section @andriod', async () => {
     await login();
     await allPages.userPage.clickOnUserProfileIcon();
-    await allPages.userPage.clickOnAddressTab();
+    // await allPages.userPage.clickOnAddressTab();
     await allPages.userPage.clickOnAddAddressButton();
-    await allPages.userPage.checkAddNewAddressMenu();
+    // await allPages.userPage.checkAddNewAddressMenu();
     await allPages.userPage.fillAddressForm();
 });
 

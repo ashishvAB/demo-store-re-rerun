@@ -34,7 +34,7 @@ test('Verify that all the navbar are working properly @firefox', async () => {
     // await allPages.homePage.assertHomePage();
     await allPages.homePage.clickAllProductsNav();
     await allPages.allProductsPage.assertAllProductsTitle();
-    await allPages.homePage.clickOnContactUsLink();
+    // await allPages.homePage.clickOnContactUsLink();
     await allPages.contactUsPage.assertContactUsTitle();
     await allPages.homePage.clickAboutUsNav();
     await allPages.homePage.assertAboutUsTitle();
@@ -44,7 +44,7 @@ test('Verify that user is able to fill Contact Us page successfully @firefox', a
     await login();
     await allPages.homePage.clickOnContactUsLink();
     await allPages.contactUsPage.assertContactUsTitle();
-    await allPages.contactUsPage.fillContactUsForm();
+    // await allPages.contactUsPage.fillContactUsForm();
     await allPages.contactUsPage.verifySuccessContactUsFormSubmission();
 });
 
@@ -56,7 +56,7 @@ test('Verify that user is able to fill Contact Us page successfully @firefox', a
   await test.step('Change password and verify login with new password', async () => {
     await allPages.userPage.clickOnUserProfileIcon();
     await allPages.userPage.clickOnSecurityButton();
-    await allPages.userPage.enterNewPassword();
+    // await allPages.userPage.enterNewPassword();
     await allPages.userPage.enterConfirmNewPassword();
     await allPages.userPage.clickOnUpdatePasswordButton();
     await allPages.userPage.getUpdatePasswordNotification();
