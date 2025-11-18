@@ -5,11 +5,11 @@ on:
 jobs:  
   rerun:  
     runs-on: ubuntu-latest  
+    container: mcr.microsoft.com/playwright:latest  
     env:  
       TESTDINO_TOKEN: ${{ secrets.TESTDINO_TOKEN }}  
     steps:  
       - uses: actions/checkout@v4  
-
       - uses: actions/setup-node@v4  
         with: { node-version: '22.x' }
  
@@ -22,11 +22,7 @@ jobs:
         id: last_failed  
         run: |  
           npx tdpw last-failed --token="${{ secrets.TESTDINO_TOKEN }}" > last_failed.txt  
-          if [ -s last_failed.txt ]; then
-              echo "args=$(cat last_failed.txt)" >> $GITHUB_OUTPUT
-          else
-              echo "args=" >> $GITHUB_OUTPUT
-          fi
+          echo "args=$(cat last_failed.txt)" >> $GITHUB_OUTPUT
  
       - name: Run only failed tests  
         run: npx playwright test ${{ steps.last_failed.outputs.args }}

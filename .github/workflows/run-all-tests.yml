@@ -1,26 +1,22 @@
 # .github/workflows/test.yml
 # Runs Playwright tests on push, PR, schedule, and manual trigger
 
-name: Run Playwright tests
-
-on:
-  push:          # runs on every push
-  pull_request:  # runs on new PRs or PR updates
+name: Playwright Tests  
+on:  
+  push:  
   workflow_dispatch:
-
-jobs:
-  run-tests:
-    name: Run Playwright Tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js 22.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: '22'
-
+ 
+jobs:  
+  test:  
+    runs-on: ubuntu-latest  
+    container: mcr.microsoft.com/playwright:latest  
+    env:  
+      TESTDINO_TOKEN: ${{ secrets.TESTDINO_TOKEN }}  
+    steps:  
+      - uses: actions/checkout@v4  
+      - uses: actions/setup-node@v4  
+        with: { node-version: '22.x' }
+ 
       - name: Create .env file
         run: |
           echo "USERNAME=${{ secrets.USERNAME }}" >> .env
@@ -32,30 +28,15 @@ jobs:
           echo "STATE=${{ secrets.STATE }}" >> .env
           echo "COUNTRY=${{ secrets.COUNTRY }}" >> .env
           echo "ZIP_CODE=${{ secrets.ZIP_CODE }}" >> .env
-     
-      - name: Cache npm dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
-      - name: Install deps + browsers
-        run: |
-          npm ci
-          npx playwright install --with-deps 
-
-      - name: Run Playwright tests
-        run: npx playwright test 
-
-      - name: Cache Failure Test metadata (always)  
-        if: always()
+      - name: Install deps  
+        run: |  
+          npm ci  
+          npx playwright install --with-deps
+ 
+      - name: Run all tests  
+        run: npx playwright test
+ 
+      - name: Cache test metadata (always)  
+        if: always()  
         run: npx tdpw cache --token="${{ secrets.TESTDINO_TOKEN }}"
-
-      - name: Send TestDino report
-        if: always()
-        # env:
-        #   NODE_ENV: staging
-        run: |
-         npx --yes tdpw ./playwright-report --token="${{ secrets.TESTDINO_TOKEN }}" --upload-html --verbose
