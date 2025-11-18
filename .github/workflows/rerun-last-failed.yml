@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4  
       - uses: actions/setup-node@v4  
         with: { node-version: '22.x' }
- 
+
       - name: Create .env file
         run: |
           echo "USERNAME=${{ secrets.USERNAME }}" >> .env
@@ -33,34 +33,12 @@ jobs:
       - name: Get last failed tests with tdpw  
         id: last_failed  
         run: |  
-          # Get failed tests and handle empty results
-          npx tdpw last-failed --token="${{ secrets.TESTDINO_TOKEN }}" > last_failed.txt || echo "No failed tests found"
-          
-          # Check if file has content and set output accordingly
-          if [ -s last_failed.txt ]; then
-            FAILED_ARGS=$(cat last_failed.txt | tr -d '\n\r')
-            if [ -n "$FAILED_ARGS" ] && [ "$FAILED_ARGS" != "No failed tests found" ]; then
-              echo "args=$FAILED_ARGS" >> $GITHUB_OUTPUT
-              echo "has_failed_tests=true" >> $GITHUB_OUTPUT
-              echo "Found failed tests: $FAILED_ARGS"
-            else
-              echo "args=" >> $GITHUB_OUTPUT
-              echo "has_failed_tests=false" >> $GITHUB_OUTPUT
-              echo "No failed tests to rerun"
-            fi
-          else
-            echo "args=" >> $GITHUB_OUTPUT
-            echo "has_failed_tests=false" >> $GITHUB_OUTPUT
-            echo "No failed tests to rerun"
-          fi
-
+          # Get the last line which should contain the actual test args
+          FAILED_TESTS=$(npx tdpw last-failed --token="${{ secrets.TESTDINO_TOKEN }}" | tail -1)
+          echo "args=$FAILED_TESTS" >> $GITHUB_OUTPUT
+ 
       - name: Run only failed tests  
-        if: steps.last_failed.outputs.has_failed_tests == 'true'
         run: npx playwright test ${{ steps.last_failed.outputs.args }}
-        
-      - name: Skip - No failed tests to rerun
-        if: steps.last_failed.outputs.has_failed_tests == 'false'
-        run: echo "No failed tests found to rerun. Skipping test execution."
  
       - name: Cache rerun metadata (always)  
         if: always()  
