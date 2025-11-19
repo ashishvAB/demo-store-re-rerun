@@ -43,3 +43,9 @@ jobs:
       - name: Cache rerun metadata (always)  
         if: always()  
         run: npx tdpw cache --token="${{ secrets.TESTDINO_TOKEN }}"
+
+
+      - name: Send TestDino report
+        if: always()
+        run: |
+         npx --yes tdpw ./playwright-report --token="${{ secrets.TESTDINO_TOKEN }}" --upload-html --verbose
